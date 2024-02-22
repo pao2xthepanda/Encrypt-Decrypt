@@ -6,7 +6,7 @@
 #include <fstream>
 using namespace std;
 
-string vignereAsciiEnc(string input, string key){
+string vignereEncAscii(string input, string key){
     int inputArray[input.length()] = {};
     int outputArray[input.length()] = {};
     int keyArray[key.length()] = {};
@@ -40,7 +40,7 @@ string vignereAsciiEnc(string input, string key){
     return output;
 }
 
-string vignereAsciiDec(string input, string key){
+string vignereDecAscii(string input, string key){
     int inputArray[input.length()] = {};
     int outputArray[input.length()] = {};
     int keyArray[key.length()] = {};
@@ -75,7 +75,7 @@ string vignereAsciiDec(string input, string key){
 }
 
 int main(){
-    int method = -1;
+    int method, algorithm = -1;
     string lineInput, keyInput, input, output, key;
     ifstream source, secret;
     ofstream result("E:/result.txt");
@@ -89,13 +89,29 @@ int main(){
         getline(secret, keyInput);
 	    key += keyInput;
     }
+    cout << "1 - Vignere, 2 - Beaufort: ";
+    cin >> algorithm;
+    while (algorithm != 1 && algorithm != 2){
+        cout << "Invalid Value. Enter Valid Input.\n1 - Vignere, 2 - Beaufort: ";
+        cin >> algorithm;
+    }
     cout << "1 - Encryption, 2 - Decryption: ";
     cin >> method;
-    if (method == 1){
-        output = vignereAsciiEnc(input, key);
+    while (method != 1 && method != 2){
+        cout << "Invalid Value. Enter Valid Input.\n1 - Encryption, 2 - Decryption: ";
+        cin >> method;
     }
-    else if (method == 2){
-        output = vignereAsciiDec(input, key);
+    if (method == 1 && algorithm == 1){
+        output = vignereEncAscii(input, key);
+    }
+    else if (method == 2 && algorithm == 1){
+        output = vignereDecAscii(input, key);
+    }
+    else if (method == 1 && algorithm == 2){
+        output = vignereDecAscii(input, key);
+    }
+    else if (method == 2 && algorithm == 2){
+        output = vignereEncAscii(input, key);
     }
     else {
         return 1;
