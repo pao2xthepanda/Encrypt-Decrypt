@@ -6,84 +6,76 @@
 #include <fstream>
 using namespace std;
 
-string encryption(string inputPlain, string key){
-    int inputPlainArray[inputPlain.length()] = {};
-    int outputArray[inputPlain.length()] = {};
+string vignereAsciiEnc(string input, string key){
+    int inputArray[input.length()] = {};
+    int outputArray[input.length()] = {};
     int keyArray[key.length()] = {};
-    for (int i = 0; i < inputPlain.length(); ++i){
-        inputPlainArray[i] = inputPlain[i] - 64;
-        if (i < key.length()){
-            keyArray[i] = key[i] - 64;
+    for (int i = 0; i < input.length(); ++i){
+        inputArray[i] = input[i] - 64;
+    }
+    for (int i = 0; i < key.length(); ++i){
+        keyArray[i] = key[i] - 64;
+    }
+    int inputArraySize = sizeof(inputArray) / sizeof(inputArray[0]);
+    int keyArraySize = sizeof(keyArray) / sizeof(keyArray[0]);
+    std::vector<int> keyStream;
+    while (keyStream.size() < inputArraySize) {
+        keyStream.insert(keyStream.end(), keyArray, keyArray + keyArraySize);
+    }
+    keyStream.resize(inputArraySize);
+    for (int i = 0; i < input.length(); ++i){
+        outputArray[i] = inputArray[i] + keyStream[i] + 64;
+        while (outputArray[i] < 32){
+            outputArray[i] = outputArray[i] + 95;
+        }
+        while (outputArray[i] > 126){
+            outputArray[i] = outputArray[i] - 95;
         }
     }
-    for (int i = 0; i < inputPlain.length(); ++i){
-        if (i < key.length()){
-            outputArray[i] = inputPlainArray[i] + keyArray[i] + 64;
-            while (outputArray[i] < 32){
-                outputArray[i] = outputArray[i] + 95;
-            }
-            while (outputArray[i] > 126){
-                outputArray[i] = outputArray[i] - 95;
-            }
+    int outputArraySize = sizeof(outputArray) / sizeof(outputArray[0]);
+    string output;
+    for (int i = 0; i < outputArraySize; ++i) {
+        output += static_cast<char>(outputArray[i]);
         }
-        else {
-            outputArray[i] = inputPlainArray[i] + 64;
-            while (outputArray[i] < 32){
-                outputArray[i] = outputArray[i] + 95;
-            }
-            while (outputArray[i] > 126){
-                outputArray[i] = outputArray[i] - 95;
-            }
-        }
-    }
-    int outputSize = sizeof(outputArray) / sizeof(outputArray[0]);
-    string outputCipher;
-    for (int i = 0; i < outputSize; ++i) {
-        outputCipher += static_cast<char>(outputArray[i]);
-        }
-    return outputCipher;
+    return output;
 }
 
-string decryption(string inputCipher, string key){
-    int inputCipherArray[inputCipher.length()] = {};
-    int outputArray[inputCipher.length()] = {};
+string vignereAsciiDec(string input, string key){
+    int inputArray[input.length()] = {};
+    int outputArray[input.length()] = {};
     int keyArray[key.length()] = {};
-    for (int i = 0; i < inputCipher.length(); ++i){
-        inputCipherArray[i] = inputCipher[i] - 64;
-        if (i < key.length()){
-            keyArray[i] = key[i] - 64;
+    for (int i = 0; i < input.length(); ++i){
+        inputArray[i] = input[i] - 64;
+    }
+    for (int i = 0; i < key.length(); ++i){
+        keyArray[i] = key[i] - 64;
+    }
+    int inputArraySize = sizeof(inputArray) / sizeof(inputArray[0]);
+    int keyArraySize = sizeof(keyArray) / sizeof(keyArray[0]);
+    std::vector<int> keyStream;
+    while (keyStream.size() < inputArraySize) {
+        keyStream.insert(keyStream.end(), keyArray, keyArray + keyArraySize);
+    }
+    keyStream.resize(inputArraySize);
+    for (int i = 0; i < input.length(); ++i){
+        outputArray[i] = inputArray[i] - keyStream[i] + 64;
+        while (outputArray[i] < 32){
+            outputArray[i] = outputArray[i] + 95;
+        }
+        while (outputArray[i] > 126){
+            outputArray[i] = outputArray[i] - 95;
         }
     }
-    for (int i = 0; i < inputCipher.length(); ++i){
-        if (i < key.length()){
-            outputArray[i] = inputCipherArray[i] - keyArray[i] + 64;
-            while (outputArray[i] < 32){
-                outputArray[i] = outputArray[i] + 95;
-            }
-            while (outputArray[i] > 126){
-                outputArray[i] = outputArray[i] - 95;
-            }
+    int outputArraySize = sizeof(outputArray) / sizeof(outputArray[0]);
+    string output;
+    for (int i = 0; i < outputArraySize; ++i) {
+        output += static_cast<char>(outputArray[i]);
         }
-        else {
-            outputArray[i] = inputCipherArray[i] + 64;
-            while (outputArray[i] < 32){
-                outputArray[i] = outputArray[i] + 95;
-            }
-            while (outputArray[i] > 126){
-                outputArray[i] = outputArray[i] - 95;
-            }
-        }
-    }
-    int outputSize = sizeof(outputArray) / sizeof(outputArray[0]);
-    string outputPlain;
-    for (int i = 0; i < outputSize; ++i) {
-        outputPlain += static_cast<char>(outputArray[i]);
-        }
-    return outputPlain;
+    return output;
 }
 
 int main(){
-    int method;
+    int method = -1;
     string lineInput, keyInput, input, output, key;
     ifstream source, secret;
     ofstream result("E:/result.txt");
@@ -100,10 +92,10 @@ int main(){
     cout << "1 - Encryption, 2 - Decryption: ";
     cin >> method;
     if (method == 1){
-        output = encryption(input, key);
+        output = vignereAsciiEnc(input, key);
     }
     else if (method == 2){
-        output = decryption(input, key);
+        output = vignereAsciiDec(input, key);
     }
     else {
         return 1;
