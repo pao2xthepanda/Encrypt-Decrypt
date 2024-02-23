@@ -6,7 +6,7 @@
 #include <fstream>
 using namespace std;
 
-string vignereEncAscii(string input, string key){
+string vignereEncAscii(string input, string key, int algorithm){
     int inputArray[input.length()] = {};
     int outputArray[input.length()] = {};
     int keyArray[key.length()] = {};
@@ -14,7 +14,12 @@ string vignereEncAscii(string input, string key){
         inputArray[i] = input[i] - 64;
     }
     for (int i = 0; i < key.length(); ++i){
-        keyArray[i] = key[i] - 64;
+        if (algorithm == 3){
+            keyArray[i] = key[0] - 64;
+        }
+        else {
+            keyArray[i] = key[i] - 64;
+        }
     }
     int inputArraySize = sizeof(inputArray) / sizeof(inputArray[0]);
     int keyArraySize = sizeof(keyArray) / sizeof(keyArray[0]);
@@ -40,7 +45,7 @@ string vignereEncAscii(string input, string key){
     return output;
 }
 
-string vignereDecAscii(string input, string key){
+string vignereDecAscii(string input, string key, int algorithm){
     int inputArray[input.length()] = {};
     int outputArray[input.length()] = {};
     int keyArray[key.length()] = {};
@@ -48,7 +53,12 @@ string vignereDecAscii(string input, string key){
         inputArray[i] = input[i] - 64;
     }
     for (int i = 0; i < key.length(); ++i){
-        keyArray[i] = key[i] - 64;
+        if (algorithm == 3){
+            keyArray[i] = key[0] - 64;
+        }
+        else {
+            keyArray[i] = key[i] - 64;
+        }
     }
     int inputArraySize = sizeof(inputArray) / sizeof(inputArray[0]);
     int keyArraySize = sizeof(keyArray) / sizeof(keyArray[0]);
@@ -89,10 +99,10 @@ int main(){
         getline(secret, keyInput);
 	    key += keyInput;
     }
-    cout << "1 - Vignere, 2 - Beaufort: ";
+    cout << "1 - Vignere, 2 - Beaufort, 3 - Caesar: ";
     cin >> algorithm;
-    while (algorithm != 1 && algorithm != 2){
-        cout << "Invalid Value. Enter Valid Input.\n1 - Vignere, 2 - Beaufort: ";
+    while (algorithm != 1 && algorithm != 2 && algorithm != 3){
+        cout << "Invalid Value. Enter Valid Input.\n1 - Vignere, 2 - Beaufort, 3 - Caesar: ";
         cin >> algorithm;
     }
     cout << "1 - Encryption, 2 - Decryption: ";
@@ -102,16 +112,22 @@ int main(){
         cin >> method;
     }
     if (method == 1 && algorithm == 1){
-        output = vignereEncAscii(input, key);
+        output = vignereEncAscii(input, key, algorithm);
     }
     else if (method == 2 && algorithm == 1){
-        output = vignereDecAscii(input, key);
+        output = vignereDecAscii(input, key, algorithm);
     }
     else if (method == 1 && algorithm == 2){
-        output = vignereDecAscii(input, key);
+        output = vignereDecAscii(input, key, algorithm);
     }
     else if (method == 2 && algorithm == 2){
-        output = vignereEncAscii(input, key);
+        output = vignereEncAscii(input, key, algorithm);
+    }
+    else if (method == 1 && algorithm == 3){
+        output = vignereEncAscii(input, key, algorithm);
+    }
+    else if (method == 2 && algorithm == 3){
+        output = vignereDecAscii(input, key, algorithm);
     }
     else {
         return 1;
